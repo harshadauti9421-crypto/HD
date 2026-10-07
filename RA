@@ -1,0 +1,926 @@
+Q1 — Correlation Analysis
+# Q1: Correlation Analysis
+# Scatter Plot, Pearson Correlation and Correlation Test
+
+Advertisement = c(15,18,12,22,25,30,35,38,42,45)
+Sales = c(45,48,40,54,60,66,70,75,82,88)
+
+# Scatter Plot
+plot(Advertisement, Sales,
+     main="scatter plot",
+     xlab="Advertisement",
+     ylab="Sales",
+     pch=4,
+     col="red")
+
+# Correlation Coefficient
+cor(Advertisement, Sales)
+
+# Correlation Test
+cor.test(Advertisement, Sales)
+
+This is directly supported by Practical 1 in your document.
+
+Q2 — Simple Linear Regression & Model Estimation
+# Q2: Simple Linear Regression and Model Estimation
+
+# Dataset 1: Maternal Health Risk Data
+
+head(Dataset)
+tail(Dataset)
+str(Dataset)
+class(Dataset)
+
+table(Dataset$RiskLevel)
+
+# Scatter Plot
+plot(Dataset$Age,
+     Dataset$SystolicBP,
+     col="blue",
+     xlab="Age",
+     ylab="SystolicBP",
+     pch=19)
+
+# Fit Regression Model
+model = lm(SystolicBP ~ Age,
+           data=Dataset)
+
+coef(model)
+summary(model)
+
+# Regression Line
+abline(model,
+       col="red",
+       lwd=2)
+
+# Prediction
+predict(model,
+        newdata=data.frame(
+          Age=c(30,45,60)
+        ))
+Dataset 2 — Salary Dataset
+# Dataset 2: Salary Dataset
+
+head(Salary_dataset)
+tail(Salary_dataset)
+str(Salary_dataset)
+class(Salary_dataset)
+
+# Scatter Plot
+plot(Salary_dataset$YearsExperience,
+     Salary_dataset$Salary,
+     col="blue",
+     xlab="YearsExperience",
+     ylab="Salary",
+     pch=19)
+
+# Fit Regression Model
+model = lm(Salary ~ YearsExperience,
+           data=Salary_dataset)
+
+coef(model)
+summary(model)
+
+# Regression Line
+abline(model,
+       col="red",
+       lwd=2)
+
+# Prediction
+predict(model,
+        newdata=data.frame(
+          YearsExperience=c(2,4,6)
+        ))
+
+The original document contains both datasets under Practical 2.
+
+Q3 — Model Evaluation & Diagnostic Analysis of SLR
+
+The handwritten sequence separates the model evaluation/diagnostic portion from Q2. The source document uses the Medical Insurance dataset for this part.
+
+# Q3: Model Evaluation and Diagnostic Analysis of SLR
+
+head(insurance)
+tail(insurance)
+str(insurance)
+class(insurance)
+
+# Scatter Plot
+plot(insurance$bmi,
+     insurance$charges,
+     col="blue",
+     xlab="bmi",
+     ylab="charges",
+     pch=19)
+
+# Fit Regression Model
+model = lm(charges ~ bmi,
+           data=insurance)
+
+coef(model)
+summary(model)
+
+# Regression Line
+abline(model,
+       col="red",
+       lwd=2)
+
+# Prediction
+predict(model,
+        newdata=data.frame(
+          bmi=c(20,30,40)
+        ))
+
+# Diagnostic Analysis
+age = predict(model)
+bmi = residuals(model)
+
+plot(age,bmi)
+
+abline(h=0,
+       col="red",
+       lwd=2)
+
+# Identify Possible Outliers
+which(abs(bmi)>20000)
+
+sort(bmi)
+
+The source specifically includes the charges ~ bmi SLR and residual diagnostic section.
+
+Q4 — Significance Testing & Confidence Interval
+
+This comes from the significance-testing section included with the SLR practical.
+
+# Q4: Significance Testing and Confidence Interval
+
+# Model
+model = lm(SystolicBP ~ Age,
+           data=Dataset)
+
+# Model Summary
+summary(model)
+
+# Hypothesis
+# H0: B1 = 0
+# H1: B1 != 0
+
+# Coefficients
+coef(model)
+
+# 95% Confidence Interval
+confint(model,
+        level=0.95)
+
+The document explicitly gives H0: B1=0, H1: B1 != 0, and confint(model, level=0.95).
+
+Q5 — Multiple Linear Regression
+# Q5: Multiple Linear Regression
+
+data = insurance
+
+head(data)
+tail(data)
+
+# Build a Model
+model = lm(charges ~ age + bmi + children,
+           data)
+
+summary(model)
+
+# New Data
+new = data.frame(
+  age=40,
+  bmi=30,
+  children=2
+)
+
+# Prediction
+predict(model,
+        newdata=new)
+
+This is the MLR model specified in the uploaded document.
+
+Q6 — Residual Analysis & Detection of Outliers in MLR
+# Q6: Residual Analysis and Detection of Outliers in MLR
+
+data = insurance
+
+# Build a Model
+model = lm(charges ~ age + bmi + children,
+           data)
+
+summary(model)
+
+# Fitted Values
+data$predicted = fitted(model)
+data$predicted
+
+# Residuals
+data$resid = residuals(model)
+data$resid
+
+# View Actual, Predicted and Residuals
+head(data[,c("charges",
+             "predicted",
+             "resid")])
+
+# Standardised Residuals
+data$stdr = rstandard(model)
+data$stdr
+
+# View Actual, Predicted, Residuals and Standardised Residuals
+head(data[,c("charges",
+             "predicted",
+             "resid",
+             "stdr")])
+
+# Identify Outliers
+outliers = which(abs(data$stdr)>2)
+outliers
+
+# View Actual Observations
+data[outliers,
+     c("age",
+       "bmi",
+       "children",
+       "charges",
+       "stdr")]
+
+# Strong Potential Outliers
+soutliers = which(abs(data$stdr)>2)
+
+# Diagnostic Plots
+plot(model)
+
+This follows the actual residual/outlier code in your document.
+
+Q7 — Multicollinearity & Heteroscedasticity in MLR
+# Q7: Multicollinearity and Heteroscedasticity in MLR
+
+data = insurance
+
+# Build a Model
+model = lm(charges ~ age + bmi + children,
+           data)
+
+summary(model)
+
+# Multicollinearity
+install.packages("car")
+library(car)
+
+vif(model)
+
+# Heteroscedasticity
+install.packages("zoo")
+library(zoo)
+
+install.packages("lmtest")
+library(lmtest)
+
+bptest(model)
+
+# Log Transformation
+model_log = lm(log(charges) ~ age + bmi + children,
+               data)
+
+summary(model_log)
+
+bptest(model_log)
+
+# Weighted Least Squares
+data$weights = 1/data$predicted^2
+
+model_wls = lm(charges ~ age + bmi + children,
+               data,
+               weights=data$weights)
+
+summary(model_wls)
+
+bptest(model_wls)
+
+# Diagnostic Plots
+plot(model_wls)
+
+plot(fitted(model_wls),
+     residuals(model_wls))
+
+abline(h=0,
+       lty=20)
+
+The source includes VIF, Breusch-Pagan testing, log transformation and WLS.
+
+Important: In the original document, data$predicted is created in the preceding MLR section. If you run Q7 independently, add this before data$weights:
+
+data$predicted = fitted(model)
+
+So the standalone complete Q7 should be:
+
+# Q7: Multicollinearity and Heteroscedasticity in MLR
+
+data = insurance
+
+model = lm(charges ~ age + bmi + children,
+           data)
+
+summary(model)
+
+# Multicollinearity
+install.packages("car")
+library(car)
+
+vif(model)
+
+# Heteroscedasticity
+install.packages("lmtest")
+library(lmtest)
+
+bptest(model)
+
+# Log Transformation
+model_log = lm(log(charges) ~ age + bmi + children,
+               data)
+
+summary(model_log)
+
+bptest(model_log)
+
+# Fitted Values
+data$predicted = fitted(model)
+
+# Weighted Least Squares
+data$weights = 1/data$predicted^2
+
+model_wls = lm(charges ~ age + bmi + children,
+               data,
+               weights=data$weights)
+
+summary(model_wls)
+
+bptest(model_wls)
+
+# Diagnostic Plots
+plot(model_wls)
+
+plot(fitted(model_wls),
+     residuals(model_wls))
+
+abline(h=0,
+       lty=20)
+Q8 — Autocorrelation & Model Diagnostic
+# Q8: Autocorrelation and Model Diagnostic
+
+install.packages("lmtest")
+library(lmtest)
+
+data = insurance
+
+head(data)
+tail(data)
+str(data)
+class(data)
+
+# Build a Model
+model = lm(charges ~ age + bmi + children,
+           data)
+
+summary(model)
+
+# Durbin-Watson Test
+dwtest(model)
+
+# Residual Plot
+plot(residuals(model))
+
+The source reports the Durbin-Watson test with DW approximately 2 and p-value greater than 0.05.
+
+Q9 — Model Selection using AIC & BIC
+# Q9: Model Selection using AIC and BIC
+
+data = insurance
+
+class(data)
+
+# Full Model
+model = lm(data$charges ~
+             data$age +
+             data$bmi +
+             data$children)
+
+summary(model)
+
+# Prediction
+new = data.frame(
+  age=40,
+  bmi=30,
+  Children=2
+)
+
+predict(model,
+        newdata=new)
+
+# Reduced Model 1
+model1 = lm(data$charges ~
+              data$age +
+              data$bmi)
+
+summary(model1)
+
+# Reduced Model 2
+model2 = lm(data$charges ~
+              data$age +
+              data$children)
+
+summary(model2)
+
+# Simple Model
+model3 = lm(data$charges ~
+              data$age)
+
+summary(model3)
+
+# AIC
+AIC(model,
+    model1,
+    model2,
+    model3)
+
+# BIC
+BIC(model,
+    model1,
+    model2,
+    model3)
+
+# Model Comparison
+model_comparison <- data.frame(
+  model=c("Full",
+          "Reduced1",
+          "Reduced2",
+          "Simple"),
+  AIC=c(AIC(model),
+        AIC(model1),
+        AIC(model2),
+        AIC(model3)),
+  BIC=c(BIC(model),
+        BIC(model1),
+        BIC(model2),
+        BIC(model3))
+)
+
+model_comparison
+
+The source explicitly compares the full, reduced and simple models using AIC and BIC.
+
+Q10 — Binary Logistic Regression
+
+The original document has a typo:
+
+data=datat[,c(...)]
+
+It should be data=Titanic[,c(...)] based on the stated dataset and the following code.
+
+# Q10: Binary Logistic Regression
+
+# Titanic Dataset
+Titanic
+
+head(Titanic)
+
+# Select Required Variables
+data = Titanic[,c("Survived",
+                  "Age",
+                  "Fare")]
+
+# Remove Missing Values
+data = na.omit(data)
+
+head(data)
+
+# Logistic Regression
+model = glm(Survived ~ Age + Fare,
+            data=data,
+            family=binomial)
+
+summary(model)
+
+coef(model)
+
+# Odds Ratio
+exp(coef(model))
+
+# Predicted Probability
+data$predprob =
+  predict(model,
+          type="response")
+
+head(data)
+
+# Predicted Class
+data$predclass =
+  ifelse(data$predprob >= 0.5,
+         1,
+         0)
+
+head(data)
+
+# Pseudo R-Squared
+install.packages("pscl")
+library(pscl)
+
+pR2(model)
+
+The document contains this exact logistic-regression procedure, with the datat typo corrected here.
+
+Q11 — Time-Series Components & Visualization
+# Q11: Time-Series Components and Visualization
+
+data("AirPassengers")
+
+AirPassengers
+
+# Start and End
+start(AirPassengers)
+end(AirPassengers)
+
+# Plot Time Series
+plot(AirPassengers)
+
+# Moving Average
+library(stats)
+
+ma = filter(
+  AirPassengers,
+  filter=rep(1/12,12),
+  sides=2
+)
+
+plot(AirPassengers,
+     main="Airline Passengers with Moving Average",
+     xlab="Years",
+     ylab="Passengers")
+
+lines(ma)
+
+# Additive Decomposition
+additive =
+  decompose(AirPassengers,
+            type="additive")
+
+plot(additive)
+
+# Multiplicative Decomposition
+multiplicative =
+  decompose(AirPassengers,
+            type="multiplicative")
+
+plot(multiplicative)
+
+This is directly present in the Time Series section of the document.
+
+Q12 — Estimation of Trend using Moving Average
+# Q12: Estimation of Trend using Moving Average
+
+data("AirPassengers")
+
+AirPassengers
+
+# Plot Original Series
+plot(AirPassengers)
+
+# 12-Month Moving Average
+ma12 = filter(
+  AirPassengers,
+  filter=rep(1/12,12),
+  sides=2
+)
+
+plot(AirPassengers)
+
+lines(ma12)
+
+# 3-Month Moving Average
+ma3 = filter(
+  AirPassengers,
+  filter=rep(1/3,3),
+  sides=2
+)
+
+plot(AirPassengers)
+
+lines(ma3)
+
+This matches the 12-month and 3-month moving-average code in the source.
+
+Q13 — Estimation of Linear Trend using Least Square Method
+# Q13: Estimation of Linear Trend using Least Square Method
+
+data("AirPassengers")
+
+AirPassengers
+
+start(AirPassengers)
+end(AirPassengers)
+
+plot(AirPassengers)
+
+# Convert Monthly Data into Annual Data
+annual_passenger =
+  aggregate(AirPassengers,
+            nfrequency=1,
+            FUN=sum)
+
+annual_passenger
+
+# Convert into Data Frame
+df = data.frame(
+  Year=time(annual_passenger),
+  Passengers=as.numeric(annual_passenger)
+)
+
+df
+
+# Linear Trend Model
+model = lm(Passengers ~ Year,
+           data=df)
+
+summary(model)
+
+# Trend Values
+df$trend = fitted(model)
+
+df
+
+# Plot Actual Values and Trend
+plot(df$Year,
+     df$Passengers,
+     type="o")
+
+abline(model)
+
+# Forecast for 1961
+newdata = data.frame(
+  Year=1961
+)
+
+predict(model,
+        newdata=newdata)
+
+This follows the annual aggregation, linear trend and 1961 prediction in the source.
+
+Q14 — Estimation of Seasonal Components
+Q14(a) — Simple Average Method
+# Q14(a): Seasonal Components - Simple Average Method
+
+data("AirPassengers")
+
+df = data.frame(
+  Year=floor(time(AirPassengers)),
+  Month=cycle(AirPassengers),
+  Passenger=as.numeric(AirPassengers)
+)
+
+head(df)
+
+# Monthly Average
+monthly_avg =
+  aggregate(Passenger ~ Month,
+            data=df,
+            FUN=mean)
+
+monthly_avg
+
+# Overall Average
+overall_avg =
+  mean(df$Passenger)
+
+# Seasonal Index
+monthly_avg$Seasonal_Index =
+  (monthly_avg$Passenger /
+     overall_avg) * 100
+
+monthly_avg
+
+# Month Names
+monthly_avg$Month_Name =
+  month.name
+
+# Plot Seasonal Indices
+plot(
+  1:12,
+  monthly_avg$Seasonal_Index,
+  type="o",
+  xaxt="n",
+  main="Seasonal Indices Simple Average Method",
+  xlab="Month",
+  ylab="Seasonal Index"
+)
+
+axis(
+  1,
+  at=1:12,
+  labels=month.abb
+)
+
+abline(
+  h=100,
+  lty=2
+)
+
+The Simple Average seasonal-index code is directly in your document.
+
+Q14(b) — Ratio to Moving Average
+# Q14(b): Seasonal Components - Ratio to Moving Average
+
+# Load AirPassengers Dataset
+data("AirPassengers")
+
+# Create Data Frame
+df = data.frame(
+  year=floor(time(AirPassengers)),
+  month=cycle(AirPassengers),
+  Passengers=as.numeric(AirPassengers)
+)
+
+# Create Date Column
+df$date = as.Date(
+  paste(df$year,
+        df$month,
+        "01",
+        sep="-"),
+  format="%Y-%m-%d"
+)
+
+# Sort Data by Date
+df = df[order(df$date),]
+
+# Set Date as Row Names
+rownames(df) = df$date
+
+# Create Time Series
+ts = df$Passengers
+
+# Calculate 12-Month Moving Average
+library(zoo)
+
+ma12 = rollmean(
+  ts,
+  k=12,
+  align="center",
+  fill=NA
+)
+
+# Calculate Ratio
+ratio = (ts / ma12) * 100
+
+# Create Month and Ratio Data Frame
+ratio_df = data.frame(
+  Month=df$month,
+  Ratio=as.numeric(ratio)
+)
+
+# Remove Missing Values
+ratio_df = na.omit(ratio_df)
+
+# Average Ratio for Each Month
+seasonal_rma = aggregate(
+  Ratio ~ Month,
+  data=ratio_df,
+  FUN=mean
+)
+
+# Display Seasonal Ratios
+seasonal_rma
+
+# Normalize Seasonal Indices
+seasonal_rma$Seasonal_Index =
+  seasonal_rma$Ratio *
+  (1200 / sum(seasonal_rma$Ratio))
+
+# Display Normalized Seasonal Indices
+print(seasonal_rma)
+
+# Plot Seasonal Indices
+plot(
+  seasonal_rma$Month,
+  seasonal_rma$Seasonal_Index,
+  type="o",
+  pch=16,
+  xlab="Month",
+  ylab="Seasonal Index",
+  main="Seasonal Indices - Ratio-to-Moving-Average"
+)
+
+# Reference Line
+abline(
+  h=100,
+  lty=2
+)
+
+This matches the R Ratio-to-Moving-Average section in your file.
+
+Q15 — Exponential Smoothing
+# Q15: Simple Exponential Smoothing
+
+data("AirPassengers")
+
+# Plot Original Data
+plot(AirPassengers)
+
+# Forecast Package
+library(forecast)
+
+# Simple Exponential Smoothing
+ses_model =
+  ses(AirPassengers)
+
+ses_model
+
+# Model Information
+ses_model$model
+
+# Fitted Values
+fitted_values =
+  fitted(ses_model)
+
+head(fitted_values)
+
+# Plot Fitted Values
+plot(AirPassengers)
+
+lines(
+  fitted_values,
+  lty=2
+)
+
+# Forecast
+forecast_12 =
+  forecast(
+    ses_model,
+    h=6
+  )
+
+forecast_12
+
+# Forecast Plot
+plot(forecast_12)
+
+This is the SES code in your document, including the 6-period forecast.
+
+Q16 — Autoregressive Model AR(1) & AR(2)
+# Q16: Autoregressive Model AR(1) and AR(2)
+
+data("AirPassengers")
+
+passengers = AirPassengers
+
+# First Difference
+diff_passengers =
+  diff(passengers)
+
+# Plot Differenced Series
+plot(diff_passengers)
+
+# AR(1) Model
+air1_model =
+  arima(
+    diff_passengers,
+    order=c(1,0,0)
+  )
+
+air1_model
+
+# AR(2) Model
+air2_model =
+  arima(
+    diff_passengers,
+    order=c(2,0,0)
+  )
+
+air2_model
+
+# Compare AIC
+AIC(
+  air1_model,
+  air2_model
+)
+
+# Forecast AR(1)
+forecast_air1 =
+  predict(
+    air1_model,
+    n.ahead=12
+  )
+
+forecast_air1$pred
+
+# Forecast AR(2)
+forecast_air2 =
+  predict(
+    air2_model,
+    n.ahead=12
+  )
+
+forecast_air2$pred
+
+This is the AR(1)/AR(2) section in your document, including first differencing, AIC comparison and 12-step forecasting.
